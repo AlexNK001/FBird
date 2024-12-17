@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
-using System.Linq;
 
 public class ScreenRepeater : MonoBehaviour
 {
@@ -21,13 +16,6 @@ public class ScreenRepeater : MonoBehaviour
         _bias = new Vector3(_screenWidth, 0f, 0f);
     }
 
-    private void Restart()
-    {
-        foreach (Screen item in _screen)
-        {
-            item.transform.position = item.StartPosition;
-        }
-    }
 
     private void Update()
     {
@@ -41,6 +29,14 @@ public class ScreenRepeater : MonoBehaviour
             }
 
             currentTransform.Translate(_speed * Time.deltaTime * Vector2.left);
+        }
+    }
+
+    private void Restart()
+    {
+        foreach (Screen item in _screen)
+        {
+            item.transform.position = item.StartPosition;
         }
     }
 

@@ -1,48 +1,60 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Game : MonoBehaviour
 {
     [SerializeField] private BirdMover _player;
-    [SerializeField] private Canvas _canvas;
-    [SerializeField] private Button _restart;
+    [SerializeField] private EndGameScreen _endGameScreen;
+    [SerializeField] private StartScreen _startScreen;
 
     public Action Restarted;
 
     private void Start()
     {
-        _player.Dead += Pause;
-        _canvas.gameObject.SetActive(false);
-        _restart.onClick.AddListener(Restart);
+        _endGameScreen.gameObject.SetActive(false);
+        Time.timeScale = 0f;
+
+        _startScreen.PlayButtonClicked += OnPlayButtonClick;
+        _endGameScreen.RestartButtonClicked += OnRestartButtonClick;
+        _player.Dead += OnGameOver;
     }
 
     private void OnDestroy()
     {
         _player.Dead -= Pause;
-        _restart.onClick.RemoveListener(Restart);
+        _startScreen.PlayButtonClicked -= OnPlayButtonClick;
+        _endGameScreen.RestartButtonClicked -= OnRestartButtonClick;
+        _player.Dead -= OnGameOver;
     }
 
-    private void Update()
+    private void OnGameOver()
     {
-        if(_canvas.gameObject.activeSelf && Input.GetKeyDown(KeyCode.Space))
-        {
-            Restart();
-        }
+        _endGameScreen.gameObject.SetActive(true);
+        Pause();
+    }
+
+    private void OnRestartButtonClick()
+    {
+        _endGameScreen.gameObject.SetActive(false);
+        Restart();
+    }
+
+    private void OnPlayButtonClick()
+    {
+        _startScreen.gameObject.SetActive(false);
+        Restart();
     }
 
     private void Pause()
     {
         Time.timeScale = 0f;
-        _canvas.gameObject.SetActive(true);
+        //Restarted.Invoke();
     }
 
     private void Restart()
     {
         Time.timeScale = 1f;
-        _canvas.gameObject.SetActive(false);
         Restarted.Invoke();
     }
 }
+
